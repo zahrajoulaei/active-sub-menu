@@ -49,9 +49,8 @@ menuLinks.forEach((item) => {
   a.textContent = item.text;
   a.subLinks = item.subLinks || null;
   topMenuEl.appendChild(a);
-  console.log('sublinka:', a.subLinks)
+  console.log("sublinka:", a.subLinks);
 });
-
 
 const subMenuEl = document.getElementById("sub-menu");
 subMenuEl.style.height = "100%";
@@ -81,15 +80,50 @@ topMenuEl.addEventListener("click", (event) => {
     event.target.classList.add("active");
 
     const clickedLinkText = event.target.textContent;
-    const linkObject = menuLinks.find(link => link.text === clickedLinkText);
+    const linkObject = menuLinks.find((link) => link.text === clickedLinkText);
 
-    if(linkObject && linkObject.subLinks){
-        subMenuEl.style.top = "100%"; 
-    }else{
-        subMenuEl.style.top = "0"; 
+    if (linkObject && linkObject.subLinks) {
+      subMenuEl.style.top = "100%";
+      buildSubmenu(linkObject.subLinks);
+    } else {
+      subMenuEl.style.top = "0";
     }
-    console.log('Active classes:', document.querySelectorAll("a.active"));
+    console.log("Active classes:", document.querySelectorAll("a.active"));
+  }
+});
 
+function buildSubmenu(subLinks) {
+  subMenuEl.innerHTML = "";
+  subLinks.forEach((item) => {
+    const a = document.createElement("a");
+    a.href = item.href;
+    a.textContent = item.text;
+    subMenuEl.appendChild(a);
+  });
+}
 
+subMenuEl.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (event.target.tagName.toLowerCase() !== "a") {
+    return;
+  }
+  console.log("An <a> element in sub menu was clicked:", event.target.href);
+
+  subMenuEl.style.top = "0";
+
+  topMenuLinks.forEach((link) => {
+    link.classList.remove("active");
+  });
+
+  const newHeader = document.createElement("h1");
+  newHeader.textContent = event.target.textContent;
+  mainEl.innerHTML = "";
+  mainEl.appendChild(newHeader);
+
+  if (event.target.textContent.toLowerCase() === "about") {
+    const aboutHeader = document.createElement("h1");
+    aboutHeader.textContent = "About";
+    mainEl.innerHTML = "";
+    mainEl.appendChild(aboutHeader);
   }
 });
